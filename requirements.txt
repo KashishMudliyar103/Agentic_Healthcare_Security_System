@@ -1,0 +1,47 @@
+# ============================================================
+# Agentic Healthcare Data Security - Full Requirements
+# Python 3.10+
+# ============================================================
+
+# --- Core Agentic Framework ---
+langgraph>=0.2.0
+langchain>=0.2.0
+langchain-core>=0.2.0
+
+# --- Gemini SDK ---
+groq>=0.9.0
+
+# --- ML & Data Science ---
+scikit-learn>=1.4.0
+pandas>=2.1.0
+numpy>=1.26.0
+shap>=0.45.0
+imbalanced-learn>=0.12.0
+joblib>=1.3.0
+
+# --- API & Streaming ---
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+websockets>=12.0
+pydantic>=2.6.0
+python-multipart>=0.0.9
+httpx>=0.27.0
+
+# --- Dashboard ---
+streamlit>=1.33.0
+plotly>=5.20.0
+streamlit-autorefresh>=1.0.1
+
+# --- Reporting ---
+jinja2>=3.1.0
+fpdf2>=2.7.9
+python-docx>=1.1.0
+
+# --- Utilities ---
+python-dotenv>=1.0.0
+loguru>=0.7.0
+rich>=13.7.0
+pyyaml>=6.0.1
+faker>=24.0.0
+matplotlib>=3.8.0
+seaborn>=0.13.0
