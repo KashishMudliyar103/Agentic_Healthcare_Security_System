@@ -17,7 +17,10 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-API_BASE = f"http://localhost:{os.getenv('API_PORT', 8000)}"
+API_BASE = os.getenv(
+    "API_URL",
+    "http://localhost:8000"
+)
 
 st.set_page_config(
     page_title="EHR Security Dashboard",

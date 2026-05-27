@@ -1,0 +1,28 @@
+# Auto normalize line endings for all text files
+* text=auto
+
+# Shell scripts - always use LF
+*.sh text eol=lf
+*.bash text eol=lf
+
+# Python - always use LF
+*.py text eol=lf
+*.pyw text eol=lf
+
+# Windows batch/powershell scripts - use CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Documentation - use LF
+*.md text eol=lf
+*.txt text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+*.json text eol=lf
+
+# Binary files
+*.pkl binary
+*.joblib binary
+*.so binary
+*.dylib binary
