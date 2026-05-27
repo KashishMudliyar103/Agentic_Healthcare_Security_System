@@ -25,6 +25,7 @@ from pydantic import BaseModel
 from loguru import logger
 from dotenv import load_dotenv
 
+
 load_dotenv()
 
 # ── Lazy pipeline import (models loaded on first use) ─────────────────────────
@@ -48,10 +49,62 @@ _ws_clients: List[WebSocket] = []
 
 # ── App Lifecycle ─────────────────────────────────────────────────────────────
 
+import asyncio
+import pandas as pd
+
+async def _seed_demo_events():
+    """
+    Seeds 50 demo events on first startup if no audit log exists.
+    Runs as a background task so it does not block server startup.
+    """
+    audit_path = os.getenv("AUDIT_LOG_PATH", "logs/hipaa_audit.jsonl")
+    data_path  = "data/ehr_access_log.csv"
+
+    # Only seed if audit log is empty or missing
+    if os.path.exists(audit_path):
+        logger.info("📋 Audit log already exists — skipping demo seed.")
+        return
+
+    if not os.path.exists(data_path):
+        logger.warning("⚠️  Dataset not found — skipping demo seed. Run: python data/generate_dataset.py")
+        return
+
+    logger.info("🌱 Seeding 50 demo events in background...")
+    try:
+        df = pd.read_csv(data_path).fillna(0)
+
+        # Mix of malicious and benign events
+        malicious = df[df["is_malicious"] == 1].head(25)
+        benign    = df[df["is_malicious"] == 0].head(25)
+        sample_df = pd.concat([malicious, benign]).sample(
+            frac=1, random_state=42
+        ).reset_index(drop=True)
+
+        from agents.langgraph_pipeline import run_pipeline
+        pipe = get_pipeline()
+
+        for _, row in sample_df.iterrows():
+            event = row.to_dict()
+            try:
+                run_pipeline(pipe, event)
+                await asyncio.sleep(0.05)   # small delay between events
+            except Exception as e:
+                logger.error(f"Seed error on {event.get('event_id')}: {e}")
+
+        logger.info("✅ Demo seed complete — 50 events processed.")
+
+    except Exception as e:
+        logger.error(f"Demo seed failed: {e}")
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("🏥 Healthcare Security API starting up...")
     get_pipeline()   # pre-warm pipeline
+
+    # Seed demo events in background — does not block startup
+    asyncio.create_task(_seed_demo_events())
+
     yield
     logger.info("🏥 Healthcare Security API shutting down...")
 
