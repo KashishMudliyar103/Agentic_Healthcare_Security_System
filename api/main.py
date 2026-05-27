@@ -224,6 +224,15 @@ async def _broadcast_ws(message: dict):
 
 # ── REST Endpoints ────────────────────────────────────────────────────────────
 
+@app.get("/")
+async def root():
+    return {
+        "message": "Healthcare EHR Security API is running",
+        "docs": "/docs",
+        "health": "/health"
+    }
+
+
 @app.get("/health")
 async def health_check():
     return {
